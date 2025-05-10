@@ -2,41 +2,44 @@
 
 include_once('config.php');
 
-    if(isset($_POST['name']))
-    {
-        $name = $_POST['name'];
-        $surname = $_POST['surname'];
-        $username = $_POST['username'];
-        $email = $_POST['email'];
-        $tempPass = $_POST['password'];
-        $password = password_hash($tempPass, PASSWORD_DEFAULT);
+if (isset($_POST['submit'])) {
+    var_dump($_POST);
+    $name = $_POST['name'];
+    $surname = $_POST['surname'];
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+    $tempPass = $_POST['password'];
+    $password = password_hash($tempPass, PASSWORD_DEFAULT);
 
-        if(empty($name)  || empty($surname)  || empty($username)  || empty($email)  || empty($password)){
-    echo "You need to fill all these fields!";         
-        }else{
-            $sql = "SELECT username FROM users WHERE username = :username";
+    if (empty($name) || empty($surname) || empty($username) || empty($email) || empty($password)) {
+        echo "You need to fill all these fields!";
+    } else {
+        $sql = "SELECT username FROM users WHERE username = :username";
 
-            $tempSQL = $conn->prepare($sql);
-            $tempSQL -> bindParam(':username, $ussername');
-            $tempSQL->execute();
+        $tempSQL = $connect->prepare($sql);
+        $tempSQL->bindParam(':username', $username);
+        $tempSQL->execute();
 
-            if($tempSQL > 0){
-                echo "Username exists";
-                header("refresh:2, url=signupform.php");
-            }else{
-                $sql = "INSERT INTO users(name,surname,username,email,password) values(:name,:surname,:username,:email,:password)";
-                $insertSql = $conn -> prepare($sql);
-                $insertSql->bindParam(':name', $name);
-                $insertSql->bindParam(':surname', $surname);   
-                $insertSql->bindParam(':username', $username);   
-                $insertSql->bindParam(':email', $email);   
-                $insertSql->bindParam(':password', $password);     
-                
-                $insertSql->execute()
-
-                echo "Data saved sucessfully!";
-                header("refresh:2, url=signupform.php");
-              }
+        if ($tempSQL->rowCount() > 0) {
+            echo "Username exists";
+            header("refresh:2; url=signupform.php");
+            exit;
+        } else {
+            $sql = "INSERT INTO users(name, surname, username, email, password) VALUES(:name, :surname, :username, :email, :password)";
+            $insertSql = $connect->prepare($sql);
+            $insertSql->bindParam(':name', $name);
+            $insertSql->bindParam(':surname', $surname);
+            $insertSql->bindParam(':username', $username);
+            $insertSql->bindParam(':email', $email);
+            $insertSql->bindParam(':password', $password);
+            if ($insertSql->execute()) {
+                echo "Data saved successfully!";
+                header("Location: signin.php");
+                exit;
+            } else {
+                echo "Failed to save data.";
+            }
         }
     }
-    ?>
+}
+?>
