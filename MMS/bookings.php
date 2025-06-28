@@ -1,12 +1,3 @@
-<?php 
-/*Creating a session  based on a session identifier, passed via a GET or POST request.
-  We will include config.php for connection with database.
-  */
-
-	 session_start();
-   
-  
-
    include_once('config.php');
 
    $user_id = $_SESSION['id'];
@@ -76,6 +67,7 @@ If the user is admin we will fetch some datas from database and show them,
     </div>
   </div>
 </header>
+
 <div class="container-fluid">
   <div class="row">
     <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
@@ -107,8 +99,7 @@ If the user is admin we will fetch some datas from database and show them,
               Bookings
             </a>
           </li>
-        
-        <?php }else{ ?>
+             <?php }else{ ?>
           <li class="nav-item">
               <a class="nav-link" href="home.php">
                 <span data-feather="file"></span>
@@ -198,3 +189,4 @@ If the user is admin we will fetch some datas from database and show them,
 
 
  </body>
+ </html>
